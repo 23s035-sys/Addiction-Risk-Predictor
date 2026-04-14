@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Addiction Risk Predictor</title>
+
+<style>
+body{
+font-family: Arial, sans-serif;
+background:#f5f7fb;
+}
+
+.container{
+width:500px;
+margin:auto;
+background:white;
+padding:25px;
+margin-top:40px;
+border-radius:10px;
+box-shadow:0px 0px 10px rgba(0,0,0,0.1);
+}
+
+h2{
+text-align:center;
+}
+
+select{
+width:100%;
+padding:8px;
+margin-top:5px;
+}
+
+button{
+width:100%;
+padding:10px;
+background:#4CAF50;
+color:white;
+border:none;
+border-radius:5px;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:#45a049;
+}
+
+.result{
+margin-top:20px;
+text-align:center;
+font-size:18px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Addiction Risk Predictor</h2>
+
+<form action="/predict" method="post">
+
+Age Group:
+<select name="Age Group" required>
+<option value="" disabled selected>Select Age Group</option>
+<option>18-25</option>
+<option>26-35</option>
+<option>36-45</option>
+<option>46+</option>
+</select>
+
+<br><br>
+
+Gender:
+<select name="Gender" required>
+<option value="" disabled selected>Select Gender</option>
+<option>Male</option>
+<option>Female</option>
+</select>
+
+<br><br>
+
+Smoking Frequency per day:
+<select name="Frequency" required>
+<option value="" disabled selected>Select</option>
+<option>0</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+</select>
+
+<br><br>
+
+Alcohol Consumption:
+<select name="Consumption" required>
+<option value="" disabled selected>Select</option>
+<option>Never</option>
+<option>Occasional</option>
+<option>Weekly</option>
+<option>Daily</option>
+</select>
+
+<br><br>
+
+Drug Use Frequency:
+<select name="Use Frequency" required>
+<option value="" disabled selected>Select</option>
+<option>Never</option>
+<option>Rarely</option>
+<option>Sometimes</option>
+<option>Often</option>
+</select>
+
+<br><br>
+
+Stress Level:
+<select name="Stress Level" required>
+<option value="" disabled selected>Select</option>
+<option>Low</option>
+<option>Moderate</option>
+<option>High</option>
+</select>
+
+<br><br>
+
+Sleep Hours:
+<select name="Sleep Hours" required>
+<option value="" disabled selected>Select</option>
+<option value="<5">&lt;5</option>
+<option>5-7</option>
+<option>7-9</option>
+<option value=">9">&gt;9</option>
+</select>
+
+<br><br>
+
+Physical Activity:
+<select name="Physical Activity" required>
+<option value="" disabled selected>Select</option>
+<option>Low</option>
+<option>Moderate</option>
+<option>High</option>
+</select>
+
+<br><br>
+
+Peer Pressure:
+<select name="Related to" required>
+<option value="" disabled selected>Select</option>
+<option>No</option>
+<option>Sometimes</option>
+<option>Yes</option>
+</select>
+
+<br><br>
+
+Use of Other Tobacco Products:
+<select name="Use of other Tobacco Products" required>
+<option value="" disabled selected>Select</option>
+<option>No</option>
+<option>Yes</option>
+</select>
+
+<br><br>
+
+<button type="submit">Check My Risk</button>
+
+</form>
+
+<div class="result">
+<h3>{{ result }}</h3>
+<p>{{ message }}</p>
+</div>
+
+</div>
+
+</body>
+</html>
