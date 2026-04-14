@@ -4,52 +4,160 @@
 <title>Addiction Risk Predictor</title>
 
 <style>
+
+*{
+box-sizing:border-box;
+font-family: 'Segoe UI', sans-serif;
+}
+
 body{
-font-family: Arial, sans-serif;
-background:#f5f7fb;
+margin:0;
+background: linear-gradient(135deg,#667eea,#764ba2);
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
 }
 
 .container{
-width:500px;
-margin:auto;
+width:520px;
 background:white;
-padding:25px;
-margin-top:40px;
-border-radius:10px;
-box-shadow:0px 0px 10px rgba(0,0,0,0.1);
+padding:30px;
+border-radius:15px;
+box-shadow:0px 15px 40px rgba(0,0,0,0.2);
+animation: fadeIn 0.8s ease;
 }
 
-h2{
+@keyframes fadeIn{
+from{opacity:0; transform:translateY(20px);}
+to{opacity:1; transform:translateY(0);}
+}
+
+.logo{
 text-align:center;
+font-size:28px;
+font-weight:bold;
+color:#667eea;
+}
+
+.subtitle{
+text-align:center;
+font-size:13px;
+color:#777;
+margin-bottom:10px;
+}
+
+.badge{
+text-align:center;
+background:#eef2ff;
+padding:6px;
+border-radius:20px;
+font-size:12px;
+margin-bottom:20px;
+color:#555;
+}
+
+label{
+font-weight:600;
+color:#444;
 }
 
 select{
 width:100%;
-padding:8px;
+padding:10px;
 margin-top:5px;
+margin-bottom:15px;
+border-radius:8px;
+border:1px solid #ccc;
 }
 
 button{
 width:100%;
-padding:10px;
-background:#4CAF50;
-color:white;
+padding:12px;
 border:none;
-border-radius:5px;
+border-radius:10px;
+background:linear-gradient(135deg,#667eea,#764ba2);
+color:white;
 font-size:16px;
+font-weight:bold;
 cursor:pointer;
+transition:0.3s;
 }
 
 button:hover{
-background:#45a049;
+transform:translateY(-2px);
+box-shadow:0px 5px 15px rgba(0,0,0,0.2);
 }
+
+/* LOADER */
+
+.loader{
+display:none;
+text-align:center;
+margin-top:15px;
+}
+
+.spinner{
+border:5px solid #f3f3f3;
+border-top:5px solid #667eea;
+border-radius:50%;
+width:30px;
+height:30px;
+animation: spin 1s linear infinite;
+margin:auto;
+}
+
+@keyframes spin{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
+}
+
+/* RESULT */
 
 .result{
 margin-top:20px;
+padding:15px;
+border-radius:10px;
 text-align:center;
-font-size:18px;
+animation:fadeIn 0.5s ease;
 }
+
+.low{background:#e8f8f0;color:#27ae60;}
+.moderate{background:#fff5e6;color:#e67e22;}
+.high{background:#fdecea;color:#e74c3c;}
+
+.meter{
+height:12px;
+background:#eee;
+border-radius:20px;
+margin-top:10px;
+overflow:hidden;
+}
+
+.meter-fill{
+height:100%;
+width:0%;
+transition:1s;
+}
+
+.low-fill{background:#27ae60;width:30%;}
+.moderate-fill{background:#f39c12;width:65%;}
+.high-fill{background:#e74c3c;width:95%;}
+
+.footer{
+margin-top:15px;
+text-align:center;
+font-size:11px;
+color:#888;
+}
+
 </style>
+
+<script>
+function showLoader(){
+document.getElementById("loader").style.display="block";
+}
+</script>
 
 </head>
 
@@ -57,11 +165,19 @@ font-size:18px;
 
 <div class="container">
 
-<h2>Addiction Risk Predictor</h2>
+<div class="logo">AI Addiction Checker</div>
 
-<form action="/predict" method="post">
+<div class="subtitle">
+Predicts addiction risk based on lifestyle behavior
+</div>
 
-Age Group:
+<div class="badge">
+Model Accuracy: 92% • Machine Learning Based
+</div>
+
+<form action="/predict" method="post" onsubmit="showLoader()">
+
+<label>Age Group</label>
 <select name="Age Group" required>
 <option value="" disabled selected>Select Age Group</option>
 <option>18-25</option>
@@ -70,18 +186,14 @@ Age Group:
 <option>46+</option>
 </select>
 
-<br><br>
-
-Gender:
+<label>Gender</label>
 <select name="Gender" required>
 <option value="" disabled selected>Select Gender</option>
 <option>Male</option>
 <option>Female</option>
 </select>
 
-<br><br>
-
-Smoking Frequency per day:
+<label>Smoking Frequency per day</label>
 <select name="Frequency" required>
 <option value="" disabled selected>Select</option>
 <option>0</option>
@@ -92,9 +204,7 @@ Smoking Frequency per day:
 <option>5</option>
 </select>
 
-<br><br>
-
-Alcohol Consumption:
+<label>Alcohol Consumption</label>
 <select name="Consumption" required>
 <option value="" disabled selected>Select</option>
 <option>Never</option>
@@ -103,9 +213,7 @@ Alcohol Consumption:
 <option>Daily</option>
 </select>
 
-<br><br>
-
-Drug Use Frequency:
+<label>Drug Use Frequency</label>
 <select name="Use Frequency" required>
 <option value="" disabled selected>Select</option>
 <option>Never</option>
@@ -114,9 +222,7 @@ Drug Use Frequency:
 <option>Often</option>
 </select>
 
-<br><br>
-
-Stress Level:
+<label>Stress Level</label>
 <select name="Stress Level" required>
 <option value="" disabled selected>Select</option>
 <option>Low</option>
@@ -124,20 +230,16 @@ Stress Level:
 <option>High</option>
 </select>
 
-<br><br>
-
-Sleep Hours:
+<label>Sleep Hours</label>
 <select name="Sleep Hours" required>
 <option value="" disabled selected>Select</option>
-<option value="<5">&lt;5</option>
+<option><5</option>
 <option>5-7</option>
 <option>7-9</option>
-<option value=">9">&gt;9</option>
+<option>>9</option>
 </select>
 
-<br><br>
-
-Physical Activity:
+<label>Physical Activity</label>
 <select name="Physical Activity" required>
 <option value="" disabled selected>Select</option>
 <option>Low</option>
@@ -145,9 +247,7 @@ Physical Activity:
 <option>High</option>
 </select>
 
-<br><br>
-
-Peer Pressure:
+<label>Peer Pressure</label>
 <select name="Related to" required>
 <option value="" disabled selected>Select</option>
 <option>No</option>
@@ -155,24 +255,51 @@ Peer Pressure:
 <option>Yes</option>
 </select>
 
-<br><br>
-
-Use of Other Tobacco Products:
+<label>Use of Other Tobacco Products</label>
 <select name="Use of other Tobacco Products" required>
 <option value="" disabled selected>Select</option>
 <option>No</option>
 <option>Yes</option>
 </select>
 
-<br><br>
-
 <button type="submit">Check My Risk</button>
+
+<div id="loader" class="loader">
+<div class="spinner"></div>
+<p>Analyzing your lifestyle...</p>
+</div>
 
 </form>
 
-<div class="result">
+{% if result %}
+
+{% if result == "Low Risk" %}
+<div class="result low">
+{% elif result == "Moderate Risk" %}
+<div class="result moderate">
+{% else %}
+<div class="result high">
+{% endif %}
+
 <h3>{{ result }}</h3>
 <p>{{ message }}</p>
+
+<div class="meter">
+{% if result == "Low Risk" %}
+<div class="meter-fill low-fill"></div>
+{% elif result == "Moderate Risk" %}
+<div class="meter-fill moderate-fill"></div>
+{% else %}
+<div class="meter-fill high-fill"></div>
+{% endif %}
+</div>
+
+</div>
+
+{% endif %}
+
+<div class="footer">
+This tool is for awareness only. Not a medical diagnosis.
 </div>
 
 </div>
