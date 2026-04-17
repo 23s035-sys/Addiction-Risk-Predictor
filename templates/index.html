@@ -1,223 +1,266 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>AI Addiction Predictor</title>
+    <title>Drug Addiction Predictor</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #1e2a38, #2c3e50);
+            margin: 0;
+            padding: 0;
+        }
 
-<style>
-*{font-family:'Poppins',sans-serif;}
+        .container {
+            width: 500px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            margin-top: 40px;
+            border-radius: 12px;
+            box-shadow: 0px 0px 15px rgba(0,0,0,0.2);
+        }
 
-body{
-margin:0;
-background:linear-gradient(135deg,#141e30,#243b55);
-color:white;
-}
+        h1 {
+            text-align: center;
+            color: white;
+            margin-top: 20px;
+        }
 
-/* HEADER */
-.header{
-text-align:center;
-padding:30px;
-font-size:32px;
-font-weight:600;
-}
+        .subtitle {
+            text-align: center;
+            font-size: 14px;
+            color: #ddd;
+            margin-bottom: 10px;
+        }
 
-/* CARD */
-.container{
-width:550px;
-margin:auto;
-background:white;
-color:black;
-padding:25px;
-border-radius:15px;
-box-shadow:0px 15px 40px rgba(0,0,0,0.3);
-}
+        h2 {
+            text-align: center;
+        }
 
-/* INPUT */
-select{
-width:100%;
-padding:10px;
-margin:8px 0;
-border-radius:8px;
-}
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
 
-/* BUTTON */
-button{
-width:100%;
-padding:12px;
-border:none;
-border-radius:10px;
-background:#667eea;
-color:white;
-font-weight:600;
-cursor:pointer;
-}
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #6c7ae0;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
 
-/* RESULT */
-.result{
-margin-top:15px;
-padding:10px;
-border-radius:10px;
-text-align:center;
-}
+        button:hover {
+            background: #5a67d8;
+        }
 
-/* CHATBOT */
-.chatbot{
-position:fixed;
-bottom:20px;
-right:20px;
-background:#667eea;
-width:60px;
-height:60px;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-cursor:pointer;
-font-size:24px;
-}
+        .result {
+            margin-top: 20px;
+            text-align: center;
+        }
 
-/* HISTORY */
-.history{
-margin-top:20px;
-font-size:14px;
-}
+        /* BAR STYLES */
+        .bar-container {
+            width: 100%;
+            background: #eee;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
 
-/* LOGIN */
-.login{
-text-align:center;
-margin-bottom:20px;
-}
+        .bar {
+            padding: 12px;
+            color: white;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
 
-</style>
+        .low {
+            background: green;
+        }
 
-<script>
+        .moderate {
+            background: orange;
+        }
 
-function showResult(){
-let risk = document.getElementById("resultText").innerText;
+        .high {
+            background: red;
+        }
 
-// Save history
-let history = JSON.parse(localStorage.getItem("history") || "[]");
-history.push(risk);
-localStorage.setItem("history", JSON.stringify(history));
-
-// Show history
-document.getElementById("history").innerText = history.join(" | ");
-}
-
-// Fake chatbot
-function openChat(){
-alert("Hi! I am your AI assistant 😊\nReduce stress, sleep well, stay healthy!");
-}
-
-</script>
-
+        .reason-text {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="header">🤖 AI Addiction Predictor</div>
+<h1>💊 Drug Addiction Predictor using Machine Learning</h1>
+
+<p class="subtitle">
+⚠️ This tool is for awareness purposes only. It does not replace medical advice or professional diagnosis.
+</p>
 
 <div class="container">
 
-<div class="login">
-<b>Login (Demo)</b><br>
-<input placeholder="Username"><br>
-<input placeholder="Password" type="password"><br><br>
+    <h2>Check Your Risk</h2>
+
+    <form action="/predict" method="post">
+
+        Age Group:
+        <select name="Age Group" required>
+            <option value="" disabled selected>Select Age Group</option>
+            <option>18-25</option>
+            <option>26-35</option>
+            <option>36-45</option>
+            <option>46+</option>
+        </select>
+
+        <br><br>
+
+        Gender:
+        <select name="Gender" required>
+            <option value="" disabled selected>Select Gender</option>
+            <option>Male</option>
+            <option>Female</option>
+        </select>
+
+        <br><br>
+
+        Smoking Frequency:
+        <select name="Frequency" required>
+            <option value="" disabled selected>Select</option>
+            <option>0</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+        </select>
+
+        <br><br>
+
+        Alcohol Consumption:
+        <select name="Consumption" required>
+            <option value="" disabled selected>Select</option>
+            <option>Never</option>
+            <option>Occasional</option>
+            <option>Weekly</option>
+            <option>Daily</option>
+        </select>
+
+        <br><br>
+
+        Drug Use Frequency:
+        <select name="Use Frequency" required>
+            <option value="" disabled selected>Select</option>
+            <option>Never</option>
+            <option>Rarely</option>
+            <option>Sometimes</option>
+            <option>Often</option>
+        </select>
+
+        <br><br>
+
+        Stress Level:
+        <select name="Stress Level" required>
+            <option value="" disabled selected>Select</option>
+            <option>Low</option>
+            <option>Moderate</option>
+            <option>High</option>
+        </select>
+
+        <br><br>
+
+        Sleep Hours:
+        <select name="Sleep Hours" required>
+            <option value="" disabled selected>Select</option>
+            <option>&lt;5</option>
+            <option>5-7</option>
+            <option>7-9</option>
+            <option>&gt;9</option>
+        </select>
+
+        <br><br>
+
+        Physical Activity:
+        <select name="Physical Activity" required>
+            <option value="" disabled selected>Select</option>
+            <option>Low</option>
+            <option>Moderate</option>
+            <option>High</option>
+        </select>
+
+        <br><br>
+
+        Peer Pressure:
+        <select name="Related to" required>
+            <option value="" disabled selected>Select</option>
+            <option>No</option>
+            <option>Sometimes</option>
+            <option>Yes</option>
+        </select>
+
+        <br><br>
+
+        Tobacco Products:
+        <select name="Use of other Tobacco Products" required>
+            <option value="" disabled selected>Select</option>
+            <option>No</option>
+            <option>Yes</option>
+        </select>
+
+        <br><br>
+
+        <button type="submit">Predict</button>
+
+    </form>
+
+    <div class="result">
+
+        <h3>{{ result }}</h3>
+        <p>{{ message }}</p>
+
+        {% if result %}
+        <div class="bar-container">
+
+            {% if result == "Low Risk" %}
+            <div class="bar low" style="width:{{score}}%;">
+                Low Risk - {{score}}%
+            </div>
+
+            {% elif result == "Moderate Risk" %}
+            <div class="bar moderate" style="width:{{score}}%;">
+                Moderate Risk - {{score}}%
+            </div>
+
+            {% else %}
+            <div class="bar high" style="width:{{score}}%;">
+                High Risk - {{score}}%
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        <p class="reason-text">
+        ⚠️ Risk influenced by: {{ reasons }}
+        </p>
+
+        {% endif %}
+
+    </div>
+
 </div>
-
-<form action="/predict" method="post" onsubmit="setTimeout(showResult,500)">
-
-<select name="Age Group" required>
-<option disabled selected>Age Group</option>
-<option>18-25</option><option>26-35</option><option>36-45</option><option>46+</option>
-</select>
-
-<select name="Gender" required>
-<option disabled selected>Gender</option>
-<option>Male</option><option>Female</option>
-</select>
-
-<select name="Frequency" required>
-<option disabled selected>Smoking</option>
-<option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-</select>
-
-<select name="Consumption" required>
-<option disabled selected>Alcohol</option>
-<option>Never</option><option>Occasional</option><option>Weekly</option><option>Daily</option>
-</select>
-
-<select name="Use Frequency" required>
-<option disabled selected>Drugs</option>
-<option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option>
-</select>
-
-<select name="Stress Level" required>
-<option disabled selected>Stress</option>
-<option>Low</option><option>Moderate</option><option>High</option>
-</select>
-
-<select name="Sleep Hours" required>
-<option disabled selected>Sleep</option>
-<option><5</option><option>5-7</option><option>7-9</option><option>>9</option>
-</select>
-
-<select name="Physical Activity" required>
-<option disabled selected>Activity</option>
-<option>Low</option><option>Moderate</option><option>High</option>
-</select>
-
-<select name="Related to" required>
-<option disabled selected>Peer Pressure</option>
-<option>No</option><option>Sometimes</option><option>Yes</option>
-</select>
-
-<select name="Use of other Tobacco Products" required>
-<option disabled selected>Tobacco</option>
-<option>No</option><option>Yes</option>
-</select>
-
-<button>Predict</button>
-
-</form>
-
-{% if result %}
-<div class="result">
-<h2 id="resultText">{{ result }}</h2>
-<p>{{ message }}</p>
-</div>
-
-<!-- CHART -->
-<canvas id="chart"></canvas>
-
-<script>
-new Chart(document.getElementById("chart"), {
-type: 'bar',
-data: {
-labels: ["Low", "Moderate", "High"],
-datasets: [{
-label: "Risk Level",
-data: [
-{{ 1 if result=="Low Risk" else 0 }},
-{{ 1 if result=="Moderate Risk" else 0 }},
-{{ 1 if result=="High Risk" else 0 }}
-]
-}]
-}
-});
-</script>
-
-{% endif %}
-
-<div class="history">
-<b>History:</b> <span id="history"></span>
-</div>
-
-</div>
-
-<div class="chatbot" onclick="openChat()">💬</div>
 
 </body>
 </html>
