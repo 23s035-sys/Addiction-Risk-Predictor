@@ -7,14 +7,12 @@
 body {
     font-family: Arial;
     background: linear-gradient(to right, #1e3c72, #2a5298);
-    color: white;
 }
 
 .container {
     width: 500px;
     margin: auto;
     background: white;
-    color: black;
     padding: 25px;
     margin-top: 40px;
     border-radius: 15px;
@@ -27,8 +25,8 @@ h1 {
 
 .subtitle {
     text-align: center;
+    color: white;
     font-size: 14px;
-    margin-bottom: 20px;
 }
 
 select, button {
@@ -82,11 +80,27 @@ button {
 <body>
 
 <h1>💊 Drug Addiction Predictor using ML</h1>
-<p class="subtitle">⚠️ This is only a prediction tool. Not a medical diagnosis.</p>
+<p class="subtitle">⚠️ This tool is for educational purposes only. Not a medical diagnosis.</p>
 
 <div class="container">
 
 <form action="/predict" method="post">
+
+<!-- FULL PARAMETERS RESTORED -->
+
+<select name="Age Group" required>
+<option disabled selected>Age Group</option>
+<option>18-25</option>
+<option>26-35</option>
+<option>36-45</option>
+<option>46+</option>
+</select>
+
+<select name="Gender" required>
+<option disabled selected>Gender</option>
+<option>Male</option>
+<option>Female</option>
+</select>
 
 <select name="Frequency" required>
 <option disabled selected>Smoking</option>
@@ -120,6 +134,16 @@ button {
 <select name="Physical Activity" required>
 <option disabled selected>Physical Activity</option>
 <option>Low</option><option>Moderate</option><option>High</option>
+</select>
+
+<select name="Related to" required>
+<option disabled selected>Peer Pressure</option>
+<option>No</option><option>Sometimes</option><option>Yes</option>
+</select>
+
+<select name="Use of other Tobacco Products" required>
+<option disabled selected>Other Tobacco</option>
+<option>No</option><option>Yes</option>
 </select>
 
 <button type="submit">Predict</button>
