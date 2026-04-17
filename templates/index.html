@@ -1,116 +1,109 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Drug Addiction Predictor</title>
+<title>Drug Addiction Predictor using ML</title>
 
-    <style>
-        body {
-            font-family: Arial;
-            background: linear-gradient(to right, #1e2a38, #2c3e50);
-        }
+<style>
+body {
+    font-family: Arial;
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+}
 
-        h1 {
-            text-align: center;
-            color: white;
-        }
+.container {
+    width: 500px;
+    margin: auto;
+    background: white;
+    color: black;
+    padding: 25px;
+    margin-top: 40px;
+    border-radius: 15px;
+}
 
-        .subtitle {
-            text-align: center;
-            color: #ddd;
-            font-size: 14px;
-        }
+h1 {
+    text-align: center;
+    color: white;
+}
 
-        .container {
-            width: 500px;
-            margin: auto;
-            background: white;
-            padding: 25px;
-            margin-top: 30px;
-            border-radius: 12px;
-        }
+.subtitle {
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
 
-        select, button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 8px;
-        }
+select, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+}
 
-        button {
-            background: #6c7ae0;
-            color: white;
-            border: none;
-        }
+button {
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
 
-        button:hover {
-            background: #5a67d8;
-        }
+.result {
+    text-align: center;
+    margin-top: 20px;
+}
 
-        .result {
-            text-align: center;
-            margin-top: 20px;
-        }
+.bar-container {
+    width: 100%;
+    background: #ddd;
+    border-radius: 20px;
+    margin-top: 20px;
+    overflow: hidden;
+}
 
-        .bar-container {
-            width: 100%;
-            background: #eee;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
+.bar {
+    height: 40px;
+    line-height: 40px;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+}
 
-        .bar {
-            padding: 12px;
-            color: white;
-            border-radius: 10px;
-            text-align: center;
-            font-weight: bold;
-        }
+.low { background: green; }
+.moderate { background: orange; }
+.high { background: red; }
 
-        .low { background: green; }
-        .moderate { background: orange; }
-        .high { background: red; }
-    </style>
+.warning {
+    margin-top: 20px;
+    font-size: 14px;
+    color: red;
+    text-align: center;
+}
+</style>
 </head>
 
 <body>
 
-<h1>💊 Drug Addiction Predictor using Machine Learning</h1>
-
-<p class="subtitle">
-⚠️ This tool is for awareness only. It does not replace medical advice.
-</p>
+<h1>💊 Drug Addiction Predictor using ML</h1>
+<p class="subtitle">⚠️ This is only a prediction tool. Not a medical diagnosis.</p>
 
 <div class="container">
 
 <form action="/predict" method="post">
 
-<select name="Age Group" required>
-<option disabled selected>Age Group</option>
-<option>18-25</option>
-<option>26-35</option>
-<option>36-45</option>
-<option>46+</option>
-</select>
-
-<select name="Gender" required>
-<option disabled selected>Gender</option>
-<option>Male</option>
-<option>Female</option>
-</select>
-
 <select name="Frequency" required>
 <option disabled selected>Smoking</option>
-<option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+<option>0</option><option>1</option><option>2</option>
+<option>3</option><option>4</option><option>5</option>
 </select>
 
 <select name="Consumption" required>
 <option disabled selected>Alcohol</option>
-<option>Never</option><option>Occasional</option><option>Weekly</option><option>Daily</option>
+<option>Never</option><option>Occasional</option>
+<option>Weekly</option><option>Daily</option>
 </select>
 
 <select name="Use Frequency" required>
 <option disabled selected>Drugs</option>
-<option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option>
+<option>Never</option><option>Rarely</option>
+<option>Sometimes</option><option>Often</option>
 </select>
 
 <select name="Stress Level" required>
@@ -120,62 +113,40 @@
 
 <select name="Sleep Hours" required>
 <option disabled selected>Sleep</option>
-<option><5</option><option>5-7</option><option>7-9</option><option>>9</option>
+<option><5</option><option>5-7</option>
+<option>7-9</option><option>>9</option>
 </select>
 
 <select name="Physical Activity" required>
-<option disabled selected>Activity</option>
+<option disabled selected>Physical Activity</option>
 <option>Low</option><option>Moderate</option><option>High</option>
-</select>
-
-<select name="Related to" required>
-<option disabled selected>Peer Pressure</option>
-<option>No</option><option>Sometimes</option><option>Yes</option>
-</select>
-
-<select name="Use of other Tobacco Products" required>
-<option disabled selected>Tobacco</option>
-<option>No</option><option>Yes</option>
 </select>
 
 <button type="submit">Predict</button>
 
 </form>
 
+{% if result %}
 <div class="result">
 
-<h3>{{ result }}</h3>
+<h2>{{ result }}</h2>
 <p>{{ message }}</p>
 
-{% if result %}
-
 <div class="bar-container">
-
-{% if result == "Low Risk" %}
-<div class="bar low" style="width:{{score}}%;">
-Low Risk - {{score}}%
+    <div class="bar 
+        {% if result == 'Low Risk' %}low{% elif result == 'Moderate Risk' %}moderate{% else %}high{% endif %}"
+        style="width: {{ score }}%;">
+        {{ score }}%
+    </div>
 </div>
 
-{% elif result == "Moderate Risk" %}
-<div class="bar moderate" style="width:{{score}}%;">
-Moderate Risk - {{score}}%
-</div>
+<p>⚠️ Risk influenced by: <b>{{ reasons }}</b></p>
 
-{% else %}
-<div class="bar high" style="width:{{score}}%;">
-High Risk - {{score}}%
 </div>
-
 {% endif %}
 
-</div>
-
-<p>
-⚠️ Risk influenced by: <b>{{ reasons }}</b>
-</p>
-
-{% endif %}
-
+<div class="warning">
+This tool is for educational purposes only.
 </div>
 
 </div>
