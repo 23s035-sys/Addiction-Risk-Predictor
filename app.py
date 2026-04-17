@@ -4,7 +4,7 @@ import pandas as pd
 
 app = Flask(__name__)
 
-# Load model files
+# Load model
 model = joblib.load("model.pkl")
 scaler = joblib.load("scaler.pkl")
 columns = joblib.load("columns.pkl")
@@ -20,9 +20,9 @@ def funny_message(pred):
         return "😎 Low risk! Keep it up."
 
 
-# Risk calculation
+# Risk + reason logic (FIXED)
 def calculate_risk_and_reason(data):
-    score = 0
+    score = 10   # ✅ base score (no 0%)
     reasons = []
 
     if data["Frequency"] in ["4", "5"]:
@@ -31,11 +31,11 @@ def calculate_risk_and_reason(data):
 
     if data["Consumption"] == "Daily":
         score += 20
-        reasons.append("daily alcohol")
+        reasons.append("daily alcohol use")
 
     if data["Use Frequency"] == "Often":
         score += 25
-        reasons.append("drug usage")
+        reasons.append("frequent drug use")
 
     if data["Sleep Hours"] == "<5":
         score += 15
@@ -43,7 +43,7 @@ def calculate_risk_and_reason(data):
 
     if data["Physical Activity"] == "Low":
         score += 10
-        reasons.append("low activity")
+        reasons.append("low physical activity")
 
     if data["Stress Level"] == "High":
         score += 10
@@ -58,6 +58,9 @@ def calculate_risk_and_reason(data):
     else:
         level = "High Risk"
 
+    if len(reasons) == 0:
+        reasons.append("healthy lifestyle")
+
     return level, score, reasons
 
 
@@ -67,7 +70,7 @@ def home():
     return render_template("index.html")
 
 
-# Prediction
+# Predict
 @app.route("/predict", methods=["POST"])
 def predict():
 
@@ -78,14 +81,12 @@ def predict():
     df = df.reindex(columns=columns, fill_value=0)
 
     df_scaled = scaler.transform(df)
-
-    model_prediction = model.predict(df_scaled)[0]
+    _ = model.predict(df_scaled)[0]  # ML prediction (not shown)
 
     level, score, reasons = calculate_risk_and_reason(data)
 
     message = funny_message(level)
-
-    reason_text = ", ".join(reasons) if reasons else "healthy lifestyle"
+    reason_text = ", ".join(reasons)
 
     return render_template(
         "index.html",
