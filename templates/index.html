@@ -18,16 +18,8 @@ body {
     border-radius: 15px;
 }
 
-h1 {
-    text-align: center;
-    color: white;
-}
-
-.subtitle {
-    text-align: center;
-    color: white;
-    font-size: 14px;
-}
+h1 { text-align: center; color: white; }
+.subtitle { text-align: center; color: white; }
 
 select, button {
     width: 100%;
@@ -38,14 +30,7 @@ select, button {
 button {
     background: #667eea;
     color: white;
-    border: none;
     border-radius: 8px;
-    cursor: pointer;
-}
-
-.result {
-    text-align: center;
-    margin-top: 20px;
 }
 
 .bar-container {
@@ -58,7 +43,6 @@ button {
 
 .bar {
     height: 40px;
-    line-height: 40px;
     color: white;
     text-align: center;
     font-weight: bold;
@@ -68,11 +52,8 @@ button {
 .moderate { background: orange; }
 .high { background: red; }
 
-.warning {
-    margin-top: 20px;
-    font-size: 14px;
-    color: red;
-    text-align: center;
+ul {
+    margin-top: 10px;
 }
 </style>
 </head>
@@ -80,26 +61,21 @@ button {
 <body>
 
 <h1>💊 Drug Addiction Predictor using ML</h1>
-<p class="subtitle">⚠️ This tool is for educational purposes only. Not a medical diagnosis.</p>
+<p class="subtitle">⚠️ Educational tool only. Not medical advice.</p>
 
 <div class="container">
 
 <form action="/predict" method="post">
 
-<!-- FULL PARAMETERS RESTORED -->
-
 <select name="Age Group" required>
 <option disabled selected>Age Group</option>
-<option>18-25</option>
-<option>26-35</option>
-<option>36-45</option>
-<option>46+</option>
+<option>18-25</option><option>26-35</option>
+<option>36-45</option><option>46+</option>
 </select>
 
 <select name="Gender" required>
 <option disabled selected>Gender</option>
-<option>Male</option>
-<option>Female</option>
+<option>Male</option><option>Female</option>
 </select>
 
 <select name="Frequency" required>
@@ -151,27 +127,25 @@ button {
 </form>
 
 {% if result %}
-<div class="result">
-
-<h2>{{ result }}</h2>
-<p>{{ message }}</p>
+<h2 style="text-align:center;">{{ result }}</h2>
+<p style="text-align:center;">{{ message }}</p>
 
 <div class="bar-container">
     <div class="bar 
-        {% if result == 'Low Risk' %}low{% elif result == 'Moderate Risk' %}moderate{% else %}high{% endif %}"
-        style="width: {{ score }}%;">
-        {{ score }}%
+    {% if result == 'Low Risk' %}low{% elif result == 'Moderate Risk' %}moderate{% else %}high{% endif %}"
+    style="width: {{ score }}%;">
+    {{ score }}%
     </div>
 </div>
 
-<p>⚠️ Risk influenced by: <b>{{ reasons }}</b></p>
+<h3>📊 Risk Contribution:</h3>
+<ul>
+{% for item, value in contributions %}
+<li><b>{{ item }}</b> → {{ value }}%</li>
+{% endfor %}
+</ul>
 
-</div>
 {% endif %}
-
-<div class="warning">
-This tool is for educational purposes only.
-</div>
 
 </div>
 
