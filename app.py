@@ -4,72 +4,76 @@ import pandas as pd
 
 app = Flask(__name__)
 
-# ---------------- LOAD MODEL FILES ----------------
+# Load model files
 model = joblib.load("model.pkl")
 scaler = joblib.load("scaler.pkl")
 columns = joblib.load("columns.pkl")
 
 
-# ---------------- MESSAGE FUNCTION ----------------
 def funny_message(pred):
     if pred == "High Risk":
-        return "⚠️ High risk detected. Please take immediate steps to improve your lifestyle."
+        return "⚠️ High risk detected. Take action immediately."
     elif pred == "Moderate Risk":
-        return "🙂 Moderate risk. You're doing okay, but some improvements are needed."
+        return "🙂 Moderate risk. Improve a few habits."
     else:
-        return "😎 Low risk! Keep maintaining your healthy habits."
+        return "😎 Low risk! Keep it up."
 
 
-# ---------------- RISK + REASON FUNCTION ----------------
+# 🔥 CORE LOGIC WITH CONTRIBUTION %
 def calculate_risk_and_reason(data):
-    score = 10  # base risk
-    reasons = []
+    score = 10
+    contributions = []
 
     # Smoking
     if data["Frequency"] in ["4", "5"]:
         score += 25
-        reasons.append("high smoking")
-    else:
-        reasons.append("controlled smoking habits")
+        contributions.append(("High Smoking", 25))
+    elif data["Frequency"] in ["2", "3"]:
+        score += 10
+        contributions.append(("Moderate Smoking", 10))
 
     # Alcohol
     if data["Consumption"] == "Daily":
         score += 20
-        reasons.append("daily alcohol use")
-    else:
-        reasons.append("limited alcohol consumption")
+        contributions.append(("Daily Alcohol", 20))
+    elif data["Consumption"] in ["Weekly", "Occasional"]:
+        score += 8
+        contributions.append(("Moderate Alcohol", 8))
 
     # Drugs
     if data["Use Frequency"] == "Often":
         score += 25
-        reasons.append("frequent drug use")
-    else:
-        reasons.append("no/low drug usage")
+        contributions.append(("Frequent Drug Use", 25))
+    elif data["Use Frequency"] == "Sometimes":
+        score += 10
+        contributions.append(("Moderate Drug Use", 10))
 
     # Sleep
     if data["Sleep Hours"] == "<5":
         score += 15
-        reasons.append("poor sleeping habits")
-    else:
-        reasons.append("good sleeping pattern")
+        contributions.append(("Poor Sleep", 15))
+    elif data["Sleep Hours"] == "5-7":
+        score += 8
+        contributions.append(("Moderate Sleep", 8))
 
     # Physical Activity
     if data["Physical Activity"] == "Low":
         score += 10
-        reasons.append("low physical activity")
-    else:
-        reasons.append("active lifestyle")
+        contributions.append(("Low Activity", 10))
+    elif data["Physical Activity"] == "Moderate":
+        score += 5
+        contributions.append(("Moderate Activity", 5))
 
     # Stress
     if data["Stress Level"] == "High":
         score += 10
-        reasons.append("high stress level")
-    else:
-        reasons.append("manageable stress level")
+        contributions.append(("High Stress", 10))
+    elif data["Stress Level"] == "Moderate":
+        score += 5
+        contributions.append(("Moderate Stress", 5))
 
     score = min(score, 100)
 
-    # Decide level
     if score < 30:
         level = "Low Risk"
     elif score < 70:
@@ -77,46 +81,35 @@ def calculate_risk_and_reason(data):
     else:
         level = "High Risk"
 
-    return level, score, reasons
+    return level, score, contributions
 
 
-# ---------------- HOME PAGE ----------------
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
-# ---------------- PREDICTION ----------------
 @app.route("/predict", methods=["POST"])
 def predict():
-
     data = request.form.to_dict()
 
-    # Convert to dataframe
     df = pd.DataFrame([data])
     df = pd.get_dummies(df)
     df = df.reindex(columns=columns, fill_value=0)
-
-    # Scale
     df_scaled = scaler.transform(df)
 
-    # ML prediction (optional, not used for final display)
     model.predict(df_scaled)
 
-    # Custom logic
-    level, score, reasons = calculate_risk_and_reason(data)
+    level, score, contributions = calculate_risk_and_reason(data)
 
     message = funny_message(level)
-
-    # Show only top 2 reasons
-    reason_text = " and ".join(reasons[:2])
 
     return render_template(
         "index.html",
         result=level,
         message=message,
         score=score,
-        reasons=reason_text
+        contributions=contributions
     )
 
 
