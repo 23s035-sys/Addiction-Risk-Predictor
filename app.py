@@ -10,84 +10,89 @@ scaler = joblib.load("scaler.pkl")
 columns = joblib.load("columns.pkl")
 
 
-# ---------------- MESSAGE FUNCTION ----------------
+# Message
 def funny_message(pred):
     if pred == "High Risk":
-        return "⚠️ Oops... you're on HIGH RISK 😬 Your habits need attention. Try slowing down and taking care."
+        return "⚠️ High risk detected. Please improve your lifestyle."
     elif pred == "Moderate Risk":
-        return "🙂 Moderate risk. You're not in danger, but improving a few habits would help."
+        return "🙂 Moderate risk. Improve some habits."
     else:
-        return "😎 Low risk! You're doing great. Keep maintaining healthy habits."
+        return "😎 Low risk! Keep it up."
 
 
-# ---------------- HOME PAGE ----------------
+# Risk calculation
+def calculate_risk_and_reason(data):
+    score = 0
+    reasons = []
+
+    if data["Frequency"] in ["4", "5"]:
+        score += 25
+        reasons.append("high smoking")
+
+    if data["Consumption"] == "Daily":
+        score += 20
+        reasons.append("daily alcohol")
+
+    if data["Use Frequency"] == "Often":
+        score += 25
+        reasons.append("drug usage")
+
+    if data["Sleep Hours"] == "<5":
+        score += 15
+        reasons.append("poor sleep")
+
+    if data["Physical Activity"] == "Low":
+        score += 10
+        reasons.append("low activity")
+
+    if data["Stress Level"] == "High":
+        score += 10
+        reasons.append("high stress")
+
+    score = min(score, 100)
+
+    if score < 30:
+        level = "Low Risk"
+    elif score < 70:
+        level = "Moderate Risk"
+    else:
+        level = "High Risk"
+
+    return level, score, reasons
+
+
+# Home
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
-# ---------------- PREDICTION ----------------
+# Prediction
 @app.route("/predict", methods=["POST"])
 def predict():
 
-    # Get user input
     data = request.form.to_dict()
 
-    # Convert to dataframe
     df = pd.DataFrame([data])
     df = pd.get_dummies(df)
     df = df.reindex(columns=columns, fill_value=0)
 
-    # ML prediction
-    prediction = model.predict(df)[0]
+    df_scaled = scaler.transform(df)
 
-    # Extract values
-    smoking = data["Frequency"]
-    alcohol = data["Consumption"]
-    drugs = data["Use Frequency"]
-    stress = data["Stress Level"]
-    sleep = data["Sleep Hours"]
-    physical = data["Physical Activity"]
-    peer = data["Related to"]
-    tobacco = data["Use of other Tobacco Products"]
+    model_prediction = model.predict(df_scaled)[0]
 
-    # ---------------- LOW RISK ----------------
-    if (
-        smoking == "0"
-        and alcohol == "Never"
-        and drugs == "Never"
-        and stress == "Low"
-        and peer == "No"
-        and tobacco == "No"
-        and physical in ["Moderate", "High"]
-        and sleep in ["7-9", ">9"]
-    ):
-        prediction = "Low Risk"
+    level, score, reasons = calculate_risk_and_reason(data)
 
-    # ---------------- HIGH RISK ----------------
-    elif (
-        smoking in ["4", "5"]
-        or alcohol == "Daily"
-        or drugs == "Often"
-        or (
-            stress == "High"
-            and sleep == "<5"
-            and physical == "Low"
-            and (smoking != "0" or alcohol != "Never" or drugs != "Never")
-        )
-    ):
-        prediction = "High Risk"
+    message = funny_message(level)
 
-    # ---------------- MODERATE ----------------
-    else:
-        prediction = "Moderate Risk"
-
-    message = funny_message(prediction)
+    reason_text = ", ".join(reasons) if reasons else "healthy lifestyle"
 
     return render_template(
         "index.html",
-        result=prediction,
-        message=message
+        result=level,
+        message=message,
+        score=score,
+        reasons=reason_text
     )
 
 
