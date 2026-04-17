@@ -5,10 +5,19 @@
 
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: Arial;
             background: linear-gradient(to right, #1e2a38, #2c3e50);
-            margin: 0;
-            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #ddd;
+            font-size: 14px;
         }
 
         .container {
@@ -16,45 +25,21 @@
             margin: auto;
             background: white;
             padding: 25px;
-            margin-top: 40px;
+            margin-top: 30px;
             border-radius: 12px;
-            box-shadow: 0px 0px 15px rgba(0,0,0,0.2);
         }
 
-        h1 {
-            text-align: center;
-            color: white;
-            margin-top: 20px;
-        }
-
-        .subtitle {
-            text-align: center;
-            font-size: 14px;
-            color: #ddd;
-            margin-bottom: 10px;
-        }
-
-        h2 {
-            text-align: center;
-        }
-
-        select {
+        select, button {
             width: 100%;
             padding: 10px;
-            margin-top: 5px;
+            margin-top: 10px;
             border-radius: 8px;
-            border: 1px solid #ccc;
         }
 
         button {
-            width: 100%;
-            padding: 12px;
             background: #6c7ae0;
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
         }
 
         button:hover {
@@ -62,11 +47,10 @@
         }
 
         .result {
-            margin-top: 20px;
             text-align: center;
+            margin-top: 20px;
         }
 
-        /* BAR STYLES */
         .bar-container {
             width: 100%;
             background: #eee;
@@ -75,30 +59,15 @@
         }
 
         .bar {
-            padding: 12px;
+            padding: 10px;
             color: white;
             border-radius: 10px;
             text-align: center;
-            font-weight: bold;
         }
 
-        .low {
-            background: green;
-        }
-
-        .moderate {
-            background: orange;
-        }
-
-        .high {
-            background: red;
-        }
-
-        .reason-text {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #333;
-        }
+        .low { background: green; }
+        .moderate { background: orange; }
+        .high { background: red; }
     </style>
 </head>
 
@@ -107,158 +76,104 @@
 <h1>💊 Drug Addiction Predictor using Machine Learning</h1>
 
 <p class="subtitle">
-⚠️ This tool is for awareness purposes only. It does not replace medical advice or professional diagnosis.
+⚠️ This tool is for awareness only. It does not replace medical advice.
 </p>
 
 <div class="container">
 
-    <h2>Check Your Risk</h2>
+<form action="/predict" method="post">
 
-    <form action="/predict" method="post">
+<select name="Age Group" required>
+<option disabled selected>Age Group</option>
+<option>18-25</option>
+<option>26-35</option>
+<option>36-45</option>
+<option>46+</option>
+</select>
 
-        Age Group:
-        <select name="Age Group" required>
-            <option value="" disabled selected>Select Age Group</option>
-            <option>18-25</option>
-            <option>26-35</option>
-            <option>36-45</option>
-            <option>46+</option>
-        </select>
+<select name="Gender" required>
+<option disabled selected>Gender</option>
+<option>Male</option>
+<option>Female</option>
+</select>
 
-        <br><br>
+<select name="Frequency" required>
+<option disabled selected>Smoking</option>
+<option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+</select>
 
-        Gender:
-        <select name="Gender" required>
-            <option value="" disabled selected>Select Gender</option>
-            <option>Male</option>
-            <option>Female</option>
-        </select>
+<select name="Consumption" required>
+<option disabled selected>Alcohol</option>
+<option>Never</option><option>Occasional</option><option>Weekly</option><option>Daily</option>
+</select>
 
-        <br><br>
+<select name="Use Frequency" required>
+<option disabled selected>Drugs</option>
+<option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option>
+</select>
 
-        Smoking Frequency:
-        <select name="Frequency" required>
-            <option value="" disabled selected>Select</option>
-            <option>0</option>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-        </select>
+<select name="Stress Level" required>
+<option disabled selected>Stress</option>
+<option>Low</option><option>Moderate</option><option>High</option>
+</select>
 
-        <br><br>
+<select name="Sleep Hours" required>
+<option disabled selected>Sleep</option>
+<option><5</option><option>5-7</option><option>7-9</option><option>>9</option>
+</select>
 
-        Alcohol Consumption:
-        <select name="Consumption" required>
-            <option value="" disabled selected>Select</option>
-            <option>Never</option>
-            <option>Occasional</option>
-            <option>Weekly</option>
-            <option>Daily</option>
-        </select>
+<select name="Physical Activity" required>
+<option disabled selected>Activity</option>
+<option>Low</option><option>Moderate</option><option>High</option>
+</select>
 
-        <br><br>
+<select name="Related to" required>
+<option disabled selected>Peer Pressure</option>
+<option>No</option><option>Sometimes</option><option>Yes</option>
+</select>
 
-        Drug Use Frequency:
-        <select name="Use Frequency" required>
-            <option value="" disabled selected>Select</option>
-            <option>Never</option>
-            <option>Rarely</option>
-            <option>Sometimes</option>
-            <option>Often</option>
-        </select>
+<select name="Use of other Tobacco Products" required>
+<option disabled selected>Tobacco</option>
+<option>No</option><option>Yes</option>
+</select>
 
-        <br><br>
+<button type="submit">Predict</button>
 
-        Stress Level:
-        <select name="Stress Level" required>
-            <option value="" disabled selected>Select</option>
-            <option>Low</option>
-            <option>Moderate</option>
-            <option>High</option>
-        </select>
+</form>
 
-        <br><br>
+<div class="result">
 
-        Sleep Hours:
-        <select name="Sleep Hours" required>
-            <option value="" disabled selected>Select</option>
-            <option>&lt;5</option>
-            <option>5-7</option>
-            <option>7-9</option>
-            <option>&gt;9</option>
-        </select>
+<h3>{{ result }}</h3>
+<p>{{ message }}</p>
 
-        <br><br>
+{% if result %}
 
-        Physical Activity:
-        <select name="Physical Activity" required>
-            <option value="" disabled selected>Select</option>
-            <option>Low</option>
-            <option>Moderate</option>
-            <option>High</option>
-        </select>
+<div class="bar-container">
 
-        <br><br>
+{% if result == "Low Risk" %}
+<div class="bar low" style="width:{{score}}%;">
+Low Risk - {{score}}%
+</div>
 
-        Peer Pressure:
-        <select name="Related to" required>
-            <option value="" disabled selected>Select</option>
-            <option>No</option>
-            <option>Sometimes</option>
-            <option>Yes</option>
-        </select>
+{% elif result == "Moderate Risk" %}
+<div class="bar moderate" style="width:{{score}}%;">
+Moderate Risk - {{score}}%
+</div>
 
-        <br><br>
+{% else %}
+<div class="bar high" style="width:{{score}}%;">
+High Risk - {{score}}%
+</div>
 
-        Tobacco Products:
-        <select name="Use of other Tobacco Products" required>
-            <option value="" disabled selected>Select</option>
-            <option>No</option>
-            <option>Yes</option>
-        </select>
+{% endif %}
 
-        <br><br>
+</div>
 
-        <button type="submit">Predict</button>
+<p>⚠️ Risk influenced by: {{ reasons }}</p>
 
-    </form>
+{% endif %}
 
-    <div class="result">
-
-        <h3>{{ result }}</h3>
-        <p>{{ message }}</p>
-
-        {% if result %}
-        <div class="bar-container">
-
-            {% if result == "Low Risk" %}
-            <div class="bar low" style="width:{{score}}%;">
-                Low Risk - {{score}}%
-            </div>
-
-            {% elif result == "Moderate Risk" %}
-            <div class="bar moderate" style="width:{{score}}%;">
-                Moderate Risk - {{score}}%
-            </div>
-
-            {% else %}
-            <div class="bar high" style="width:{{score}}%;">
-                High Risk - {{score}}%
-            </div>
-
-            {% endif %}
-
-        </div>
-
-        <p class="reason-text">
-        ⚠️ Risk influenced by: {{ reasons }}
-        </p>
-
-        {% endif %}
-
-    </div>
+</div>
 
 </div>
 
