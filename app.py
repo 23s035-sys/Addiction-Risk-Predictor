@@ -10,6 +10,7 @@ scaler = joblib.load("scaler.pkl")
 columns = joblib.load("columns.pkl")
 
 
+# ---------------- MESSAGE ----------------
 def funny_message(pred):
     if pred == "High Risk":
         return "⚠️ High risk detected. Take action immediately."
@@ -19,10 +20,12 @@ def funny_message(pred):
         return "😎 Low risk! Keep it up."
 
 
-# 🔥 CORE LOGIC WITH CONTRIBUTION %
+# ---------------- CORE LOGIC ----------------
 def calculate_risk_and_reason(data):
+
+    # 🔥 Base risk included properly
     score = 10
-    contributions = []
+    contributions = [("Base Risk (Uncertainty)", 10)]
 
     # Smoking
     if data["Frequency"] in ["4", "5"]:
@@ -72,8 +75,10 @@ def calculate_risk_and_reason(data):
         score += 5
         contributions.append(("Moderate Stress", 5))
 
+    # Limit score
     score = min(score, 100)
 
+    # Level
     if score < 30:
         level = "Low Risk"
     elif score < 70:
@@ -84,6 +89,7 @@ def calculate_risk_and_reason(data):
     return level, score, contributions
 
 
+# ---------------- ROUTES ----------------
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -91,15 +97,17 @@ def home():
 
 @app.route("/predict", methods=["POST"])
 def predict():
+
     data = request.form.to_dict()
 
+    # ML processing (kept for completeness)
     df = pd.DataFrame([data])
     df = pd.get_dummies(df)
     df = df.reindex(columns=columns, fill_value=0)
     df_scaled = scaler.transform(df)
-
     model.predict(df_scaled)
 
+    # Custom logic
     level, score, contributions = calculate_risk_and_reason(data)
 
     message = funny_message(level)
